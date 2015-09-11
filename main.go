@@ -77,6 +77,8 @@ func (m *Main) Run(args ...string) error {
 	fmt.Fprintf(m.Stdout, "%-10s %d\n", "Title:", stats.TitleN)
 	fmt.Fprintf(m.Stdout, "%-10s %d\n", "Upper:", stats.UpperN)
 	fmt.Fprintln(m.Stdout, "")
+	fmt.Fprintf(m.Stdout, "%-10s %d\n", "Multibyte:", stats.MultiByteN)
+	fmt.Fprintln(m.Stdout, "")
 	fmt.Fprintf(m.Stdout, "%-10s %d\n", "Total:", stats.TotalN)
 	fmt.Fprintln(m.Stdout, "")
 
@@ -106,7 +108,7 @@ func (m *Main) Stat(r io.RuneReader) (Stats, error) {
 
 	for {
 		// Read next character.
-		ch, _, err := r.ReadRune()
+		ch, sz, err := r.ReadRune()
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -154,6 +156,9 @@ func (m *Main) Stat(r io.RuneReader) (Stats, error) {
 		if unicode.IsUpper(ch) {
 			stats.UpperN++
 		}
+		if sz > 1 {
+			stats.MultiByteN++
+		}
 	}
 
 	return stats, nil
@@ -161,18 +166,19 @@ func (m *Main) Stat(r io.RuneReader) (Stats, error) {
 
 // Stats represents unicode stats for a set of runes.
 type Stats struct {
-	TotalN   int
-	ControlN int
-	DigitN   int
-	GraphicN int
-	LetterN  int
-	LowerN   int
-	MarkN    int
-	NumberN  int
-	PrintN   int
-	PunctN   int
-	SpaceN   int
-	SymbolN  int
-	TitleN   int
-	UpperN   int
+	TotalN     int
+	ControlN   int
+	DigitN     int
+	GraphicN   int
+	LetterN    int
+	LowerN     int
+	MarkN      int
+	NumberN    int
+	PrintN     int
+	PunctN     int
+	SpaceN     int
+	SymbolN    int
+	TitleN     int
+	UpperN     int
+	MultiByteN int
 }
